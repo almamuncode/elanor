@@ -1,53 +1,17 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { getProduct, isSize, type Size } from "./products";
+import { getProduct, type Size } from "./products";
+import { BAG_KEY, MAX_QTY, SAVED_KEY, lineKey, parseBag, parseSaved, safeParse, type BagLine } from "./bag-storage";
 
-/* ------------------------------------------------------------------ types */
-
-export interface BagLine {
-  slug: string;
-  color: string;
-  size: Size;
-  qty: number;
-}
+export type { BagLine } from "./bag-storage";
+export { MAX_QTY, lineKey } from "./bag-storage";
 
 export type Overlay = "menu" | "search" | "bag" | null;
 
-export const MAX_QTY = 10;
-const BAG_KEY = "elanor.bag.v1";
-const SAVED_KEY = "elanor.saved.v1";
-
-export const lineKey = (l: Pick<BagLine, "slug" | "color" | "size">) => `${l.slug}|${l.color}|${l.size}`;
-
-/* --------------------------------------------------------------- parsing */
-
-function isRecord(v: unknown): v is Record<string, unknown> {
-  return typeof v === "object" && v !== null;
-}
-
-function isBagLine(v: unknown): v is BagLine {
-  if (!isRecord(v)) return false;
-  const product = typeof v.slug === "string" ? getProduct(v.slug) : undefined;
-  return (
-    product !== undefined &&
-    v.color === product.colorLabel &&
-    isSize(v.size) &&
-    typeof v.qty === "number" &&
-    Number.isInteger(v.qty) &&
-    v.qty >= 1 &&
-    v.qty <= MAX_QTY
-  );
-}
-
-function isSavedSlug(v: unknown): v is string {
-  return typeof v === "string" && getProduct(v) !== undefined;
-}
-
 function readJSON(key: string): unknown {
   try {
-    const raw = window.localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
+    return safeParse(window.localStorage.getItem(key));
   } catch {
     return null;
   }
@@ -59,21 +23,6 @@ function writeJSON(key: string, value: unknown) {
   } catch {
     /* storage unavailable (private mode, quota): the session still works in memory */
   }
-}
-
-function parseBag(v: unknown): BagLine[] {
-  if (!Array.isArray(v)) return [];
-  const seen = new Map<string, BagLine>();
-  for (const item of v.filter(isBagLine)) {
-    const key = lineKey(item);
-    const prev = seen.get(key);
-    seen.set(key, prev ? { ...prev, qty: Math.min(MAX_QTY, prev.qty + item.qty) } : { ...item });
-  }
-  return [...seen.values()];
-}
-
-function parseSaved(v: unknown): string[] {
-  return Array.isArray(v) ? [...new Set(v.filter(isSavedSlug))] : [];
 }
 
 /* --------------------------------------------------------------- context */
