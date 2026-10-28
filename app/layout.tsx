@@ -6,6 +6,7 @@ import { StoreProvider } from "@/lib/store";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Overlays from "@/components/Overlays";
+import { ALLOW_INDEXING, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const anton = localFont({
   src: "./fonts/anton-latin-400-normal.woff2",
@@ -34,10 +35,24 @@ const script = localFont({
   preload: false,
 });
 
+const DESCRIPTION =
+  "ÉLANOR womenswear concept storefront: tailoring, dresses and everyday pieces in warm, wearable colour. Sample products for demonstration only.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: { default: "ÉLANOR — Everyday pieces with an individual point of view", template: "%s — ÉLANOR" },
-  description:
-    "ÉLANOR womenswear concept storefront: tailoring, dresses and everyday pieces in warm, wearable colour. Sample products for demonstration only.",
+  description: DESCRIPTION,
+  applicationName: SITE_NAME,
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "en_US",
+    title: "ÉLANOR — Everyday pieces with an individual point of view",
+    description: DESCRIPTION,
+    images: [{ url: "/images/hero-campaign.png", width: 1536, height: 1024, alt: "Woman in rust tailoring in a sunlit plaster room" }],
+  },
+  twitter: { card: "summary_large_image" },
+  robots: ALLOW_INDEXING ? undefined : { index: false, follow: true },
 };
 
 export const viewport: Viewport = {

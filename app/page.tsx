@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import Newsletter from "@/components/Newsletter";
 import { CATEGORIES, countIn, FEATURED_SLUGS, getProduct, type Product } from "@/lib/products";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const CATEGORY_IMAGES = {
   tailoring: { src: "/images/category-tailoring.png", alt: "Woman in rust tailoring beside a caramel armchair" },

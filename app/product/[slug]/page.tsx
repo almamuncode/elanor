@@ -15,9 +15,16 @@ export async function generateMetadata({ params }: PageProps<"/product/[slug]">)
   const { slug } = await params;
   const product = getProduct(slug);
   if (!product) return { title: "Look not found" };
+  const description = `${product.summary} Sample product in ${product.colorLabel.toLowerCase()}.`;
   return {
     title: product.name,
-    description: `${product.summary} Sample product in ${product.colorLabel.toLowerCase()}.`,
+    description,
+    alternates: { canonical: `/product/${product.slug}` },
+    openGraph: {
+      title: product.name,
+      description,
+      images: [{ url: product.front.src, width: 1024, height: 1536, alt: product.front.alt }],
+    },
   };
 }
 

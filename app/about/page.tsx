@@ -5,6 +5,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About",
   description: "ÉLANOR makes everyday pieces with an individual point of view. Proposed brand story for the concept demo.",
+  alternates: { canonical: "/about" },
 };
 
 const PRINCIPLES = [

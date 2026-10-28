@@ -9,6 +9,7 @@ import { CATEGORIES, countIn, PRODUCTS } from "@/lib/products";
 export const metadata: Metadata = {
   title: "Shop the collection",
   description: "Eight sample looks across tailoring, dresses and everyday pieces.",
+  alternates: { canonical: "/shop" },
 };
 
 /** Rendered in the static shell before the URL's filters are read on the client. */
